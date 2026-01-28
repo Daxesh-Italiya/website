@@ -1,0 +1,58 @@
+# Basic Security
+Options -Indexes
+
+# Simple Caching - Most Compatible
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/html "access plus 7200 seconds"
+    ExpiresByType text/css "access plus 31536000 seconds"
+    ExpiresByType application/javascript "access plus 31536000 seconds"
+    ExpiresByType image/jpeg "access plus 31536000 seconds"
+    ExpiresByType image/jpg "access plus 31536000 seconds"
+    ExpiresByType image/webp "access plus 31536000 seconds"
+    ExpiresByType image/svg+xml "access plus 31536000 seconds"
+    ExpiresByType image/png "access plus 31536000 seconds"
+</IfModule>
+
+# Cache-Control Headers for Better Browser Caching
+<IfModule mod_headers.c>
+
+    # Favicon - VERY SMALL CACHE (only affects favicon.ico & favicon.png)
+    <FilesMatch "^(favicon\.ico|favicon\.png)$">
+        Header set Cache-Control "max-age=60, public, must-revalidate"
+    </FilesMatch>
+
+    # Cache JavaScript files for 1 year
+    <FilesMatch "\.(js)$">
+        Header set Cache-Control "max-age=31536000, public, immutable"
+    </FilesMatch>
+
+    # Specific caching for talwind.js - aggressive caching
+    <Files "talwind.js">
+        Header set Cache-Control "max-age=31536000, public, immutable"
+        Header append Vary "Accept-Encoding"
+    </Files>
+
+    # Cache CSS files for 1 year
+    <FilesMatch "\.(css)$">
+        Header set Cache-Control "max-age=31536000, public, immutable"
+    </FilesMatch>
+
+    # Cache images for 1 year (EXCLUDING favicon)
+    <FilesMatch "\.(jpg|jpeg|gif|webp|svg|png)$">
+        Header set Cache-Control "max-age=31536000, public, immutable"
+    </FilesMatch>
+
+    # HTML files - short cache
+    <FilesMatch "\.(html|htm)$">
+        Header set Cache-Control "max-age=7200, public, must-revalidate"
+    </FilesMatch>
+</IfModule>
+
+# Compression - If Available
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css application/javascript text/plain
+</IfModule>
+
+# UTF-8 Encoding
+AddDefaultCharset utf-8
